@@ -1,6 +1,6 @@
 {
-  "name": "Progressive Web App",
-  "short_name": "PWA",
+  "name": "Bugzilla Nofiy",
+  "short_name": "Bugzify",
   "description": "Demo for progressive web app with push notifications, background sync etc.",
   "start_url": "./index.html?utm=homescreen",
   "display": "standalone",
@@ -18,9 +18,9 @@
       "sizes": "512x512"
   }],
   "author": {
-    "name": "Gokulakrishnan Kalaikovan",
-    "website": "https://gokulkrishh.github.io",
-    "github": "https://github.com/gokulkrishh",
+    "name": "Charles Michel",
+    "website": "https://charlesmichel.github.io",
+    "github": "https://github.com/charlesmichel",
     "source-repo": "https://github.com/gokulkrishh/demo-progressive-web-app"
   },
   "gcm_sender_id": "847244712742",
