@@ -276,10 +276,11 @@
           password: "password"
         },
         error: function () {
+          alert('error')
           $('#info').html('<p>An error has occurred</p>');
         },
         success: function (data) {
-          debugger;
+          alert('test');
           if (data.id) {
             $.cookie('token', data.token);
             $.cookie('id', data.id);
