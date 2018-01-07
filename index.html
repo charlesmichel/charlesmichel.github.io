@@ -6,7 +6,7 @@
   <title>Bugzilla Nofication Application</title>
   <meta http-equiv=X-UA-Compatible content="IE=edge">
   <meta name=description content="This a Demo Progressive Web Application which will work in offline, has a splash screen add to home screen etc,.">
-  <meta name=viewport content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0288d1">
   <meta name="msapplication-TileColor" content="#0288d1">
   <meta name="msapplication-TileImage" content="./images/icons/mstile-150x150.png">
@@ -21,38 +21,42 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:200,300,400,500,700">
   <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <style>
-      body.refreshing #inbox {
-        filter: blur(1px);
-        touch-action: none; /* prevent scrolling */
-      }
-      body.refreshing .refresher {
-        transform: translate3d(0,150%,0) scale(1);
-        z-index: 1;
-      }
-      .refresher {
-        --refresh-width: 55px;
-        pointer-events: none;
-        width: var(--refresh-width);
-        height: var(--refresh-width);
-        border-radius: 50%; 
-        position: absolute;
-        transition: all 300ms cubic-bezier(0,0,0.2,1);
-        will-change: transform, opacity;        
-      }
-    </style>
-    
+    body.refreshing #inbox {
+      filter: blur(1px);
+      touch-action: none;
+      /* prevent scrolling */
+    }
+
+    body.refreshing .refresher {
+      transform: translate3d(0, 150%, 0) scale(1);
+      z-index: 1;
+    }
+
+    .refresher {
+      --refresh-width: 55px;
+      pointer-events: none;
+      width: var(--refresh-width);
+      height: var(--refresh-width);
+      border-radius: 50%;
+      position: absolute;
+      transition: all 300ms cubic-bezier(0, 0, 0.2, 1);
+      will-change: transform, opacity;
+    }
+  </style>
+
 </head>
 
 <body>
-    <div class="refresher">
-        <div class="loading-bar"></div>
-        <div class="loading-bar"></div>
-        <div class="loading-bar"></div>
-        <div class="loading-bar"></div>
-      </div>
+  <div class="refresher">
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+    <div class="loading-bar"></div>
+  </div>
   <div class="app app__layout">
     <header>
       <span class="header__icon">
@@ -77,17 +81,28 @@
     </div>
     <div class="menu__overlay"></div>
     <div class="app__content">
-        <button class="login__btn">Login</button>
-      <h3>REOPENED</h3>
-        <div class="card">
-            <div class="card__spinner"></div>
-            <div class="card__container">
-              <ul id="bug__reopened">
-
-              </ul>                          
-            </div>
-          </div>
-
+      <button class="msc-button-raised login__btn">Login</button>      
+      <div class="mdc-card">
+          <section class="mdc-card__primary">
+            <h1 class="mdc-card__title mdc-card__title--large">NEW <span id="bug__open_count"></span></h1>
+            <h2 class="mdc-card__subtitle">My Open Bugs List</h2>
+          </section>
+          <section class="mdc-card__supporting-text">
+              <ul id="bug__open" class="mdc-list">
+                </ul>
+          </section>        
+        </div>
+        <br>
+      <div class="mdc-card">
+        <section class="mdc-card__primary">
+          <h1 class="mdc-card__title mdc-card__title--large">RE-OPENED <span id="bug__reopened_count"></span></h1>
+          <h2 class="mdc-card__subtitle">Reopened Bugs List</h2>
+        </section>
+        <section class="mdc-card__supporting-text">
+            <ul id="bug__reopened" class="mdc-list">
+              </ul>
+        </section>        
+      </div>
     </div>
     <!--
 
@@ -177,8 +192,9 @@
         <img class="fab__image" src="./images/push-off.png" alt="Push Notification" />
       </div>
 
-    --><!-- Toast msg -->
-     <!-- <div class="toast__msg"></div>
+    -->
+    <!-- Toast msg -->
+    <!-- <div class="toast__msg"></div>
     </div> -->
   </div>
 
@@ -205,25 +221,24 @@
     ga('send', 'pageview');
   </script>
   <script>
-      let _startY;
-      const inbox = document.querySelector('.app__layout');
-    debugger;
-      inbox.addEventListener('touchstart', e => {
-        _startY = e.touches[0].pageY;
-      }, {passive: true});
-    
-      inbox.addEventListener('touchmove', e => {
-        const y = e.touches[0].pageY;
-        // Activate custom pull-to-refresh effects when at the top of the container
-        // and user is scrolling up.
-        if (document.scrollingElement.scrollTop === 0 && y > _startY &&
-            !document.body.classList.contains('refreshing')) {
-          // refresh inbox.
-        }
-      }, {passive: true});
-    </script>
+    let _startY;
+    const inbox = document.querySelector('.app__layout');    
+    inbox.addEventListener('touchstart', e => {
+      _startY = e.touches[0].pageY;
+    }, { passive: true });
+
+    inbox.addEventListener('touchmove', e => {
+      const y = e.touches[0].pageY;
+      // Activate custom pull-to-refresh effects when at the top of the container
+      // and user is scrolling up.
+      if (document.scrollingElement.scrollTop === 0 && y > _startY &&
+        !document.body.classList.contains('refreshing')) {
+        // refresh inbox.
+      }
+    }, { passive: true });
+  </script>
   <script>
-    $(document).ready(function () {      
+    $(document).ready(function () {
       if ($.cookie("token")) {
         $('.login__btn').hide();
         $.ajax({
@@ -241,11 +256,46 @@
             $('#info').html('<p>An error has occurred</p>');
           },
           success: function (data) {
-            var html = '';            
-            $.each(data.bugs, function (index, value) {
-              html += '<li>'+ ++index + ": " + value.summary + '</li>';
-            });
+            var html = '';
+            if(data){
+              $.each(data.bugs, function (index, value) {
+              html += '<li class="mdc-list-item">' + value.id + ": " + value.summary + '</li>';
+            });            
+            }else{
+              html = 'No Bugs';
+            }
+            
+            $('#bug__reopened_count').html(data.bugs.length);
             $('#bug__reopened').html(html);
+          },
+          type: 'GET'
+        });
+
+        $.ajax({
+          url: 'http://118.185.2.243/bugzilla/rest/bug',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+          },
+          data: {
+            token: $.cookie("token"),
+            ids: $.cookie("id"),
+            assigned_to: 'krishna.schnell@gmail.com',
+            status: 'CONFIRMED'
+          },
+          error: function () {
+            $('#info').html('<p>An error has occurred</p>');
+          },
+          success: function (data) {
+            var html = '';
+            if(data){
+              $.each(data.bugs, function (index, value) {
+              html += '<li class="mdc-list-item">' + value.id + ": " + value.summary + '</li>';
+            });            
+            }else{
+              html = 'No Bugs';
+            }                        
+            $('#bug__open_count').html(data.bugs.length);
+            $('#bug__open').html(html);
           },
           type: 'GET'
         });
@@ -254,7 +304,7 @@
     });
   </script>
   <script>
-    $(".login__btn").click(function () {      
+    $(".login__btn").click(function () {
       $.ajax({
         url: 'http://118.185.2.243/bugzilla/rest/login',
         headers: {
@@ -264,10 +314,10 @@
           login: "krishna.schnell@gmail.com",
           password: "password"
         },
-        error: function () {          
+        error: function () {
           $('#info').html('<p>An error has occurred</p>');
         },
-        success: function (data) {          
+        success: function (data) {
           if (data.id) {
             $.cookie('token', data.token);
             $.cookie('id', data.id);
