@@ -223,19 +223,14 @@
       }, {passive: true});
     </script>
   <script>
-    $(document).ready(function () {
-      var headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT',
-        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, x-csrf-token',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
+    $(document).ready(function () {      
       if ($.cookie("token")) {
         $('.login__btn').hide();
         $.ajax({
           url: 'http://118.185.2.243/bugzilla/rest/bug',
-          headers: headers,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+          },
           data: {
             token: $.cookie("token"),
             ids: $.cookie("id"),
@@ -259,18 +254,12 @@
     });
   </script>
   <script>
-    $(".login__btn").click(function () {
-      var headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT',
-        'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, x-csrf-token',
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
-
+    $(".login__btn").click(function () {      
       $.ajax({
         url: 'http://118.185.2.243/bugzilla/rest/login',
-        headers: headers,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
         data: {
           login: "krishna.schnell@gmail.com",
           password: "password"
