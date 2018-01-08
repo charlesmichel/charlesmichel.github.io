@@ -100,7 +100,7 @@
         </section>
         <section class="mdc-card__supporting-text">
           <ul id="bug__open" class="mdc-list">
-              <div id="loading" style="display:none">Loading...</div>
+              <div id="loading_open" class="ajax__loader" style="display:none"></div>
           </ul>
         </section>
       </div>
@@ -114,7 +114,7 @@
         </section>
         <section class="mdc-card__supporting-text">
           <ul id="bug__reopened" class="mdc-list">
-              <div id="loading" style="display:none">Loading</div>
+              <div id="loading_reopen" class="ajax__loader" style="display:none"></div>
           </ul>
         </section>
       </div>
@@ -254,13 +254,16 @@
   </script>
   <script>
       $(function () {
-          var loading = $("#loading");
+          var loading_reopen = $("#loading_reopen");
+          var loading_open = $("#loading_open");
           $(document).ajaxStart(function () {
-              loading.show();
+              loading_open.show();
+              loading_reopen.show();
           });
   
           $(document).ajaxStop(function () {
-              loading.hide();
+            loading_open.hide();
+              loading_reopen.hide();
           });
   
           $("#startAjaxRequest").click(function () {
@@ -359,6 +362,7 @@
             $.cookie('token', data.token);
             $.cookie('id', data.id);
             $.cookie('login', $('.login__email').val());
+            location.reload();
           }
         },
         type: 'GET'
