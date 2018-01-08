@@ -77,31 +77,46 @@
         <li>
           <a target="_blank" rel="noopener" href="https://github.com/charlesmichel/charlesmichel.github.io">Source</a>
         </li>
+        <li>
+          <a rel="noopener" onclick="clear_cookies()">Logout</a>
+        </li>
       </ul>
     </div>
     <div class="menu__overlay"></div>
     <div class="app__content">
-      <button class="msc-button-raised login__btn">Login</button>      
-      <div class="mdc-card">
-          <section class="mdc-card__primary">
-            <h1 class="mdc-card__title mdc-card__title--large">NEW <span id="bug__open_count"></span></h1>
-            <h2 class="mdc-card__subtitle">My Open Bugs List</h2>
-          </section>
-          <section class="mdc-card__supporting-text">
-              <ul id="bug__open" class="mdc-list">
-                </ul>
-          </section>        
-        </div>
-        <br>
+      <div class="mdc-text-field login_email_field">
+        <input type="text" id="my-text-field login__email" class="mdc-text-field__input login__email">
+        <label class="mdc-text-field__label" for="my-text-field">Bugzilla Email Id</label>
+        <div class="mdc-text-field__bottom-line"></div>
+      </div>
+      <button class="msc-button-raised login__btn">Login</button>
+
       <div class="mdc-card">
         <section class="mdc-card__primary">
-          <h1 class="mdc-card__title mdc-card__title--large">RE-OPENED <span id="bug__reopened_count"></span></h1>
+          <h1 class="mdc-card__title mdc-card__title--large">NEW
+            <span id="bug__open_count"></span>
+          </h1>
+          <h2 class="mdc-card__subtitle">My Open Bugs List</h2>
+        </section>
+        <section class="mdc-card__supporting-text">
+          <ul id="bug__open" class="mdc-list">
+              <div id="loading" style="display:none">Loading...</div>
+          </ul>
+        </section>
+      </div>
+      <br>
+      <div class="mdc-card">
+        <section class="mdc-card__primary">
+          <h1 class="mdc-card__title mdc-card__title--large">RE-OPENED
+            <span id="bug__reopened_count"></span>
+          </h1>
           <h2 class="mdc-card__subtitle">Reopened Bugs List</h2>
         </section>
         <section class="mdc-card__supporting-text">
-            <ul id="bug__reopened" class="mdc-list">
-              </ul>
-        </section>        
+          <ul id="bug__reopened" class="mdc-list">
+              <div id="loading" style="display:none">Loading</div>
+          </ul>
+        </section>
       </div>
     </div>
     <!--
@@ -222,7 +237,7 @@
   </script>
   <script>
     let _startY;
-    const inbox = document.querySelector('.app__layout');    
+    const inbox = document.querySelector('.app__layout');
     inbox.addEventListener('touchstart', e => {
       _startY = e.touches[0].pageY;
     }, { passive: true });
@@ -238,9 +253,29 @@
     }, { passive: true });
   </script>
   <script>
+      $(function () {
+          var loading = $("#loading");
+          $(document).ajaxStart(function () {
+              loading.show();
+          });
+  
+          $(document).ajaxStop(function () {
+              loading.hide();
+          });
+  
+          $("#startAjaxRequest").click(function () {
+              $.ajax({
+                  url: "http://www.google.com",
+                  // ... 
+              });
+          });
+      });
+  </script>
+  <script>
     $(document).ready(function () {
       if ($.cookie("token")) {
         $('.login__btn').hide();
+        $('.login_email_field').hide();
         $.ajax({
           url: 'http://118.185.2.243/bugzilla/rest/bug',
           headers: {
@@ -249,7 +284,7 @@
           data: {
             token: $.cookie("token"),
             ids: $.cookie("id"),
-            assigned_to: 'krishna.schnell@gmail.com',
+            assigned_to: $.cookie("login"),
             status: 'REOPENED'
           },
           error: function () {
@@ -257,14 +292,14 @@
           },
           success: function (data) {
             var html = '';
-            if(data){
+            if (data) {
               $.each(data.bugs, function (index, value) {
-              html += '<li class="mdc-list-item">' + value.id + ": " + value.summary + '</li>';
-            });            
-            }else{
+                html += '<li class="mdc-list-item">' + value.id + ": " + value.summary + '</li>';
+              });
+            } else {
               html = 'No Bugs';
             }
-            
+
             $('#bug__reopened_count').html(data.bugs.length);
             $('#bug__reopened').html(html);
           },
@@ -279,7 +314,7 @@
           data: {
             token: $.cookie("token"),
             ids: $.cookie("id"),
-            assigned_to: 'krishna.schnell@gmail.com',
+            assigned_to: $.cookie("login"),
             status: 'CONFIRMED'
           },
           error: function () {
@@ -287,13 +322,13 @@
           },
           success: function (data) {
             var html = '';
-            if(data){
+            if (data) {
               $.each(data.bugs, function (index, value) {
-              html += '<li class="mdc-list-item">' + value.id + ": " + value.summary + '</li>';
-            });            
-            }else{
+                html += '<li class="mdc-list-item">' + value.id + ": " + value.summary + '</li>';
+              });
+            } else {
               html = 'No Bugs';
-            }                        
+            }
             $('#bug__open_count').html(data.bugs.length);
             $('#bug__open').html(html);
           },
@@ -305,27 +340,39 @@
   </script>
   <script>
     $(".login__btn").click(function () {
+      debugger;
       $.ajax({
         url: 'http://118.185.2.243/bugzilla/rest/login',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
         },
         data: {
-          login: "krishna.schnell@gmail.com",
+          login: $('.login__email').val(),
           password: "password"
         },
         error: function () {
           $('#info').html('<p>An error has occurred</p>');
         },
         success: function (data) {
+          debugger;
           if (data.id) {
             $.cookie('token', data.token);
             $.cookie('id', data.id);
+            $.cookie('login', $('.login__email').val());
           }
         },
         type: 'GET'
       });
     });    
+  </script>
+  <script>
+    function clear_cookies() {
+      var cookies = $.cookie();
+      for (var cookie in cookies) {
+        $.removeCookie(cookie);
+      }
+      location.reload();
+    }
   </script>
 </body>
 
