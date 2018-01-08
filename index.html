@@ -86,12 +86,12 @@
     <div class="app__content">
       <div class="mdc-grid-list mdc-grid-list--tile-gutter-1 login__logo">
         <ul class="mdc-grid-list__tiles">
-          <li class="mdc-grid-tile">            
-              <img src="images/icons/icons8-bug-64.png" height="64" width="64"/>            
+          <li class="mdc-grid-tile">
+            <img src="images/icons/icons8-bug-64.png" height="64" width="64" />
           </li>
         </ul>
       </div>
-      <div class="mdc-text-field login_email_field" >
+      <div class="mdc-text-field login_email_field">
         <input type="text" id="my-text-field login__email" class="mdc-text-field__input login__email" placeholder="Enter your email">
         <!-- <label class="mdc-text-field__label" for="my-text-field">Bugzilla Email Id</label> -->
         <div class="mdc-text-field__bottom-line"></div>
@@ -286,7 +286,7 @@
         $('.login__btn').hide();
         $('.login_email_field').hide();
         $('.login_password_field').hide();
-        $('.login__logo').hide();        
+        $('.login__logo').hide();
         $('.mdc-card').show();
         $.ajax({
           url: 'http://118.185.2.243/bugzilla/rest/bug',
@@ -364,10 +364,13 @@
           login: $('.login__email').val(),
           password: $('.login__password').val()
         },
+        beforeSend: function () {
+          $('.login__btn').html('loading...');
+        },
         error: function () {
           $('#info').html('<p>An error has occurred</p>');
         },
-        success: function (data) {          
+        success: function (data) {
           if (data.id) {
             $.cookie('token', data.token);
             $.cookie('id', data.id);
